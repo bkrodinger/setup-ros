@@ -7255,7 +7255,10 @@ function runLinux() {
         const ubuntuCodename = yield utils.determineDistribCodename();
         yield addAptRepo(ubuntuCodename, use_ros2_testing);
         // Temporary fix to avoid error mount: /var/lib/grub/esp: special device (...) does not exist.
-        yield utils.exec("sudo", ["apt-mark", "hold", "grub-efi-amd64-signed"]);
+        const arch = process.arch;
+        if (arch == "x64") {
+            yield utils.exec("sudo", ["apt-mark", "hold", "grub-efi-amd64-signed"]);
+        }
         yield utils.exec("sudo", ["apt-get", "upgrade", "-y"]);
         // Install development-related packages and some common dependencies
         yield apt.installAptDependencies(installConnext);
